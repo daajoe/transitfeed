@@ -13,10 +13,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 import logging
-import time
+logger=logging.getLogger(__name__)
 
+import time
 import util
 
 # Problem types:
@@ -376,10 +376,14 @@ class ProblemAccumulatorInterface(object):
 class SimpleProblemAccumulator(ProblemAccumulatorInterface):
   """This is a basic problem accumulator that just prints to console."""
   def _Report(self, e):
+    levels = {TYPE_ERROR: logging.ERROR, TYPE_WARNING: logging.WARNING, TYPE_NOTICE: logging.INFO}
     context = e.FormatContext()
     if context:
-      print context
-    print util.EncodeUnicode(self._LineWrap(e.FormatProblem(), 78))
+      #logging.log(levels[e.type],context)
+      logger.log(levels[e.type],context)
+      #exit(1)
+    #logging.log(levels[e.type],util.EncodeUnicode(self._LineWrap(e.FormatProblem(), 78)))
+    logger.log(levels[e.type],util.EncodeUnicode(self._LineWrap(e.FormatProblem(), 78)))
 
   @staticmethod
   def _LineWrap(text, width):
@@ -803,13 +807,6 @@ class ExceptionProblemAccumulator(ProblemAccumulatorInterface):
 
 default_accumulator = ExceptionProblemAccumulator()
 default_problem_reporter = ProblemReporter(default_accumulator)
-
-# Add a default handler to send log messages to console
-console = logging.StreamHandler()
-console.setLevel(logging.WARNING)
-log = logging.getLogger("schedule_builder")
-log.addHandler(console)
-
 
 class Error(Exception):
   pass
