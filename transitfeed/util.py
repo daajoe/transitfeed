@@ -300,7 +300,7 @@ def IsValidTimezone(timezone):
   """
   try:
     import pytz
-    return timezone in pytz.common_timezones
+    return timezone in pytz.all_timezones
   except ImportError:  # no pytz
     print ("Timezone not checked "
            "(install pytz package for timezone validation)")
